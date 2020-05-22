@@ -4,15 +4,16 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.imobile3.groovypayments.MainApplication;
+import com.imobile3.groovypayments.data.entities.CartEntity;
+import com.imobile3.groovypayments.data.entities.CartProductEntity;
 import com.imobile3.groovypayments.data.entities.ProductEntity;
-import com.imobile3.groovypayments.data.enums.GroovyColor;
-import com.imobile3.groovypayments.data.enums.GroovyIcon;
-import com.imobile3.groovypayments.data.utils.ProductBuilder;
+import com.imobile3.groovypayments.data.entities.ProductTaxJunctionEntity;
+import com.imobile3.groovypayments.data.entities.TaxEntity;
+import com.imobile3.groovypayments.data.entities.UserEntity;
+import com.imobile3.groovypayments.utils.MockDataHelper;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public final class GroovyDemoManager {
 
@@ -72,19 +73,44 @@ public final class GroovyDemoManager {
             // Initialize a new database instance.
             DatabaseHelper.getInstance().init(mContext);
 
-            List<ProductEntity> productEntities = new ArrayList<>();
-
-            // Add one product.
-            productEntities.add(ProductBuilder.build(101L,
-                    "Tasty Chicken Sandwich",
-                    "Chicken, lettuce, tomato and mayo",
-                    750L, 200L,
-                    GroovyIcon.Sandwich, GroovyColor.Yellow));
+            // Datbase convenience variable.
+            GroovyDatabase database = DatabaseHelper.getInstance().getDatabase();
 
             // Insert entities into database instance.
-            DatabaseHelper.getInstance().getDatabase().getProductDao()
-                    .insertProducts(
-                            productEntities.toArray(new ProductEntity[0]));
+            database.getProductDao().insertProducts(
+                    MockDataHelper.getInstance()
+                            .getMockProducts().toArray(new ProductEntity[0]));
+
+            // Insert MOCK entities into database instance.
+            database.getTaxDao()
+                    .insertTaxes(
+                            MockDataHelper.getInstance()
+                                    .getMockTaxEntity()
+                                    .toArray(new TaxEntity[0]));
+
+            database.getProductTaxJunctionDao()
+                    .insertProductTaxJunctions(
+                            MockDataHelper.getInstance()
+                                    .getMockProductTaxJunctionEntity()
+                                    .toArray(new ProductTaxJunctionEntity[0]));
+
+            database.getCartDao()
+                    .insertCarts(
+                            MockDataHelper.getInstance()
+                                    .getMockCartEntity()
+                                    .toArray(new CartEntity[0]));
+
+            database.getCartProductDao()
+                    .insertCartProducts(
+                            MockDataHelper.getInstance()
+                                    .getMockCartProductEntity()
+                                    .toArray(new CartProductEntity[0]));
+
+            database.getUserDao()
+                    .insertUsers(
+                            MockDataHelper.getInstance()
+                                    .getMockUserEntity()
+                                    .toArray(new UserEntity[0]));
 
             // All done!
             return null;
